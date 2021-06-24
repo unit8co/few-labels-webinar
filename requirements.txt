@@ -4,3 +4,4 @@ transformers
 datasets
 ipywidgets
 jupyterlab
+elasticsearch
