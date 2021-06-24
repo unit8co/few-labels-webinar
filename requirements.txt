@@ -1,0 +1,6 @@
+torch
+scikit-learn
+transformers
+datasets
+ipywidgets
+jupyterlab
