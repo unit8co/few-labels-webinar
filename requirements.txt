@@ -5,3 +5,5 @@ datasets
 ipywidgets
 jupyterlab
 elasticsearch
+tensorboard
+
