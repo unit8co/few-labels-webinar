@@ -17,9 +17,19 @@ source venv/bin/activate
 pip install -r requirements
 ```
 
-Run:
+To train MLM:
+```
+python -m src.train_agree_add_loop --only_mlm 1
+```
+
+To train on top default base model:
 ```
 python -m src.train_agree_add_loop
+```
+
+To train on top of your trained MLM:
+```
+python -m src.train_agree_add_loop --base_model_name models/nlu_evaluation_data/mlm/epoch_SOMENUMBER
 ```
 
 # Info

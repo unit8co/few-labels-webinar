@@ -54,8 +54,8 @@ def train_mlm(
     tokenizer,
 ):
 
-    processed_trainu_dataset = process_dataset(trainu_dataset)
-    processed_val_dataset = process_dataset(val_dataset)
+    processed_trainu_dataset = process_dataset(trainu_dataset, tokenizer, max_length)
+    processed_val_dataset = process_dataset(val_dataset, tokenizer, max_length)
 
     mlm_model = AutoModelForMaskedLM.from_pretrained(base_model_name)
     mlm_data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer)

@@ -10,15 +10,16 @@ from src.agreement import train_agreement, get_label_candidates
 
 
 def main(
-    train_mlm=False,
+    only_mlm=False,
     dataset_name="nlu_evaluation_data",
     base_model_name="bert-base-uncased",
+    tokenizer_name="bert-base-uncased",
     max_iterations=8,
-    mlm_epochs=1,  # 10,
-    classifier_epochs=1,  # 30,
+    mlm_epochs=10,
+    classifier_epochs=30,
     agreement_epochs=1,
     max_length=64,
-    pair_multiplier=1,  # 5,
+    pair_multiplier=5,
     val_ratio=0.2,
     label_ratio=0.02,
     seed=42,
@@ -35,7 +36,7 @@ def main(
     )
 
     # Tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(base_model_name)
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
 
     # Creating the splits
     train_val_datasets = dataset.train_test_split(
@@ -49,12 +50,20 @@ def main(
     val_dataset = train_val_datasets["test"]
 
     # Train MLM model if needed
-    if train_mlm:
+    if only_mlm:
         print("\n#####\nTraining MLM\n#####\n")
-        train_mlm(base_model_name, trainu_dataset, max_length)
+        mlm_model = train_mlm(
+            dataset_name,
+            trainu_dataset,
+            val_dataset,
+            base_model_name,
+            max_length,
+            mlm_epochs,
+            tokenizer,
+        )
         print(
             "MLM model trained. "
-            "Please rerun the script using train_mlm=False and "
+            "Please rerun the script using only_mlm=False and "
             "setting the base_model_name to the desired MLM model path."
         )
         exit(0)
@@ -71,6 +80,8 @@ def main(
     iteration_writer.add_text("pair_multiplier", str(pair_multiplier))
 
     for iteration in range(max_iterations):
+
+        print(f"\n#####\nIteration {iteration}\n#####\n")
 
         # Log data stats
         iteration_writer.add_scalar(
