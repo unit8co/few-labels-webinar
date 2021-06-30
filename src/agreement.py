@@ -24,6 +24,7 @@ def train_agreement(
     tokenizer,
     iteration_writer,
     iteration,
+    experiment_name,
     seed,
 ):
 
@@ -37,8 +38,8 @@ def train_agreement(
         base_model_name
     )
     agreement_training_args = TrainingArguments(
-        output_dir=f"./models/{dataset_name}/agreement/{iteration}",
-        logging_dir=f"./models/{dataset_name}/agreement/{iteration}",
+        output_dir=f"./models/{dataset_name}/{experiment_name}/agreement/{iteration}",
+        logging_dir=f"./models/{dataset_name}/{experiment_name}/agreement/{iteration}",
         overwrite_output_dir=True,
         num_train_epochs=agreement_epochs,
         per_device_train_batch_size=16,
@@ -111,9 +112,7 @@ def get_label_candidates(
             max_length=2 * max_length,
             padding="max_length",
         )
-        batch = {
-            k: torch.tensor(v).to(device) for k, v in tokenized_pairs.items()
-        }
+        batch = {k: torch.tensor(v).to(device) for k, v in tokenized_pairs.items()}
         output = agreement_model(**batch)
         for i in range(retrieved_count):
             if output["logits"][i][1] > output["logits"][i][0]:  # positive pair
@@ -147,9 +146,7 @@ def get_label_candidates(
             y_pred.append(predicted_label)
             item_number_to_label[item_number] = predicted_label
 
-    elastic_accuracy = len(candidates) / (
-        elastic_bad_match_count + len(candidates)
-    )
+    elastic_accuracy = len(candidates) / (elastic_bad_match_count + len(candidates))
     fishing_f1 = f1_score(y_true, y_pred, average="micro")
     iteration_writer.add_scalar(
         "agreement/fishing/elastic_accuracy", elastic_accuracy, iteration
@@ -229,9 +226,7 @@ def pair_up(batch, match):
             match_to_append = 1
         elif match == "negative":
             labels_wihtout_this = [
-                l
-                for l in label_to_indices.keys()
-                if label_to_indices[l] and l != label
+                l for l in label_to_indices.keys() if label_to_indices[l] and l != label
             ]
             # labels_wihtout_this.remove(label)
             random_negative_label = random.choice(labels_wihtout_this)

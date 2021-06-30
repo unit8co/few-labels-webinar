@@ -1,3 +1,4 @@
+import fasttext
 import numpy as np
 from transformers import (
     AutoConfig,
@@ -94,11 +95,10 @@ def train_classifier(
     tokenizer,
     iteration_writer,
     iteration,
+    experiment_name,
 ):
 
-    processed_trainl_dataset = process_dataset(
-        trainl_dataset, tokenizer, max_length
-    )
+    processed_trainl_dataset = process_dataset(trainl_dataset, tokenizer, max_length)
     processed_val_dataset = process_dataset(val_dataset, tokenizer, max_length)
 
     classifier_config = AutoConfig.from_pretrained(
@@ -109,8 +109,8 @@ def train_classifier(
     )
 
     classifier_training_args = TrainingArguments(
-        output_dir=f"./models/{dataset_name}/classifier/{iteration}",
-        logging_dir=f"./models/{dataset_name}/classifier/{iteration}",
+        output_dir=f"./models/{dataset_name}/{experiment_name}/classifier/{iteration}",
+        logging_dir=f"./models/{dataset_name}/{experiment_name}/classifier/{iteration}",
         overwrite_output_dir=True,
         num_train_epochs=classifier_epochs,
         per_device_train_batch_size=8,
@@ -127,8 +127,7 @@ def train_classifier(
         eval_dataset=processed_val_dataset,
         compute_metrics=lambda p: {
             "accuracy": np.mean(
-                np.argmax(p.predictions, axis=1)
-                == np.argmax(p.label_ids, axis=1)
+                np.argmax(p.predictions, axis=1) == np.argmax(p.label_ids, axis=1)
             )
         },
     )
@@ -151,3 +150,22 @@ def train_classifier(
     )
 
     return classifier_model
+
+
+def train_classifier_fasttext(
+    trainl_dataset, val_dataset, iteration_writer, iteration, epochs=5000
+):
+    with open("trainl.fasttext.txt", "w") as fp:
+        for item in trainl_dataset:
+            fp.write(f'__label__{item["label"]}\t{item["text"]}\n')
+    with open("val.fasttext.txt", "w") as fp:
+        for item in val_dataset:
+            fp.write(f'__label__{item["label"]}\t{item["text"]}\n')
+
+    model = fasttext.train_supervised("trainl.fasttext.txt", epoch=epochs)
+    accuracy = model.test("val.fasttext.txt")[2]
+    iteration_writer.add_scalar(
+        "classifier/eval/accuracy",
+        accuracy,
+        iteration,
+    )
