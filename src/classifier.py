@@ -1,3 +1,4 @@
+import torch
 import fasttext
 import numpy as np
 from transformers import (
@@ -96,6 +97,7 @@ def train_classifier(
     iteration_writer,
     iteration,
     experiment_name,
+    init_weights,
 ):
 
     processed_trainl_dataset = process_dataset(trainl_dataset, tokenizer, max_length)
@@ -108,6 +110,16 @@ def train_classifier(
         base_model_name, config=classifier_config
     )
 
+    if init_weights:
+        print("Initializing weights...")
+
+        def init_weights(m):
+            if type(m) == torch.nn.Linear:
+                torch.nn.init.xavier_uniform_(m.weight)
+                m.bias.data.fill_(0.01)
+
+        classifier_model.apply(init_weights)
+
     classifier_training_args = TrainingArguments(
         output_dir=f"./models/{dataset_name}/{experiment_name}/classifier/{iteration}",
         logging_dir=f"./models/{dataset_name}/{experiment_name}/classifier/{iteration}",
@@ -115,9 +127,11 @@ def train_classifier(
         num_train_epochs=classifier_epochs,
         per_device_train_batch_size=8,
         per_device_eval_batch_size=64,
-        save_strategy="epoch",
+        save_strategy="steps",
+        save_steps=500,
         save_total_limit=2,
-        evaluation_strategy="epoch",
+        evaluation_strategy="steps",
+        eval_steps=500,
     )
 
     classifier_trainer = Trainer(

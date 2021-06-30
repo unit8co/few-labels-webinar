@@ -46,7 +46,8 @@ def train_agreement(
         per_device_eval_batch_size=16,
         save_strategy="epoch",
         save_total_limit=2,
-        evaluation_strategy="epoch",
+        evaluation_strategy="steps",
+        eval_steps=50,
     )
     agreement_trainer = Trainer(
         model=agreement_model,

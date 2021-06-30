@@ -16,12 +16,13 @@ from src.agreement import train_agreement, get_label_candidates
 def main(
     only_mlm=False,
     use_fasttext=False,
+    init_weights=False,
     dataset_name="nlu_evaluation_data",
-    base_model_name="distilbert-base-uncased",
-    tokenizer_name="distilbert-base-uncased",
+    base_model_name="bert-base-uncased",
+    tokenizer_name="bert-base-uncased",
     max_iterations=8,
-    mlm_epochs=10,
-    classifier_epochs=50,
+    mlm_epochs=50,
+    classifier_epochs=100,
     agreement_epochs=1,
     max_length=64,
     pair_multiplier=5,
@@ -108,6 +109,8 @@ def main(
                 tokenizer,
                 iteration_writer,
                 iteration,
+                experiment_name,
+                init_weights,
             )
 
         # Train agreement model
@@ -123,6 +126,7 @@ def main(
             tokenizer,
             iteration_writer,
             iteration,
+            experiment_name,
             seed,
         )
 
