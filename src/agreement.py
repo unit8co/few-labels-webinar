@@ -37,8 +37,8 @@ def train_agreement(
         base_model_name
     )
     agreement_training_args = TrainingArguments(
-        output_dir=f"./models/{dataset_name}/agreement",
-        logging_dir=f"./models/{dataset_name}/agreement",
+        output_dir=f"./models/{dataset_name}/agreement/{iteration}",
+        logging_dir=f"./models/{dataset_name}/agreement/{iteration}",
         overwrite_output_dir=True,
         num_train_epochs=agreement_epochs,
         per_device_train_batch_size=16,

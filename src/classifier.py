@@ -109,8 +109,8 @@ def train_classifier(
     )
 
     classifier_training_args = TrainingArguments(
-        output_dir=f"./models/{dataset_name}/classifier",
-        logging_dir=f"./models/{dataset_name}/classifier",
+        output_dir=f"./models/{dataset_name}/classifier/{iteration}",
+        logging_dir=f"./models/{dataset_name}/classifier/{iteration}",
         overwrite_output_dir=True,
         num_train_epochs=classifier_epochs,
         per_device_train_batch_size=8,
