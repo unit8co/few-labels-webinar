@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Models and logs
+models/
+tensorboard/
+elasticsearch*
+*fasttext.*
