@@ -56,7 +56,9 @@ def train_mlm(
     tokenizer,
 ):
 
-    processed_trainu_dataset = process_dataset(trainu_dataset, tokenizer, max_length)
+    processed_trainu_dataset = process_dataset(
+        trainu_dataset, tokenizer, max_length
+    )
     processed_val_dataset = process_dataset(val_dataset, tokenizer, max_length)
 
     mlm_model = AutoModelForMaskedLM.from_pretrained(base_model_name)
@@ -100,7 +102,9 @@ def train_classifier(
     init_weights,
 ):
 
-    processed_trainl_dataset = process_dataset(trainl_dataset, tokenizer, max_length)
+    processed_trainl_dataset = process_dataset(
+        trainl_dataset, tokenizer, max_length
+    )
     processed_val_dataset = process_dataset(val_dataset, tokenizer, max_length)
 
     classifier_config = AutoConfig.from_pretrained(
@@ -141,7 +145,8 @@ def train_classifier(
         eval_dataset=processed_val_dataset,
         compute_metrics=lambda p: {
             "accuracy": np.mean(
-                np.argmax(p.predictions, axis=1) == np.argmax(p.label_ids, axis=1)
+                np.argmax(p.predictions, axis=1)
+                == np.argmax(p.label_ids, axis=1)
             )
         },
     )
