@@ -92,7 +92,8 @@ def get_label_candidates(
     )
 
     device = "cuda"
-    k = 5  # Number of neighbours in elastic as well of number of candidates per class at the end
+    k = 10  # Number of neighbours in elastic
+    best_per_class = 2  # Number of candidates per class at the end
 
     # Use elasticsearch on trainu to fish for new candidates.
     # Then pair these candidates with trainl to see if they have the same label.
@@ -139,7 +140,7 @@ def get_label_candidates(
     y_pred = []
     item_number_to_label = {}
     for predicted_label, candidates_for_label in tqdm(candidates.items()):
-        top_candidates = sorted(candidates_for_label, reverse=True)[:k]
+        top_candidates = sorted(candidates_for_label, reverse=True)[:best_per_class]
         for candidate in top_candidates:
             true_label = candidate[2]
             item_number = candidate[1]
