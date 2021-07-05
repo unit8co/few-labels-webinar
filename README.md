@@ -1,7 +1,8 @@
 # Demo: learning with few labeled data and many unlabeled
-Learning with few labels
+Demo for learning with few labels webinar.
+The idea is inspired from (but not the same) 
+[Graph Agreement Models](https://proceedings.neurips.cc/paper/2019/file/4772c1b987f1f6d8c9d4ef0f3b764f7a-Paper.pdf).
 
-Inspired from GAM paper
 
 # How to run this
 Get elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html
