@@ -33,6 +33,11 @@ To train on top of your trained MLM:
 python -m src.train_agree_add_loop --base_model_name models/nlu_evaluation_data/mlm/epoch_SOMENUMBER
 ```
 
+To run with fasttext as classifier for computing the baseline:
+```
+python -m src.train_agree_add_loop --use_fasttext 1
+```
+
 # Info
 Formatted with black!
 ```
