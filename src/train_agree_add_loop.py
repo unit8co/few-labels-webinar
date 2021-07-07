@@ -1,3 +1,4 @@
+import os
 import random
 import datetime
 from tqdm import tqdm
@@ -89,6 +90,9 @@ def main(
     iteration_writer.add_text("pair_multiplier", str(pair_multiplier))
 
     for iteration in range(max_iterations):
+
+        # Uncomment this line if you run out of disk space due to high number of iterations
+        # os.system(f"find models/{dataset_name}/{experiment_name}" + " | grep checkpoint | xargs rm {} -fr")
 
         print(f"\n#####\nIteration {iteration}\n#####\n")
 
